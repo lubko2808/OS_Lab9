@@ -1,2 +1,6 @@
 ﻿  main.cpp
-  OS_Lab9_Server.vcxproj -> C:\Users\Lubomyr\source\repos\OS_Lab9_Server\x64\Debug\OS_Lab9_Server.exe
+C:\Users\Lubomyr\Downloads\Telegram Desktop\OS_Lab9_2\OS_Lab9_2\OS_Lab9_Server\OS_Lab9_Server\main.cpp(74,14): warning C4311: 'reinterpret_cast': pointer truncation from 'LPVOID' to 'int'
+C:\Users\Lubomyr\Downloads\Telegram Desktop\OS_Lab9_2\OS_Lab9_2\OS_Lab9_Server\OS_Lab9_Server\main.cpp(74,14): warning C4302: 'reinterpret_cast': truncation from 'LPVOID' to 'int'
+C:\Users\Lubomyr\Downloads\Telegram Desktop\OS_Lab9_2\OS_Lab9_2\OS_Lab9_Server\OS_Lab9_Server\main.cpp(273,53): warning C4312: 'reinterpret_cast': conversion from 'int' to 'LPVOID' of greater size
+  LINK : C:\Users\Lubomyr\Downloads\Telegram Desktop\OS_Lab9_2\OS_Lab9_2\OS_Lab9_Server\x64\Debug\OS_Lab9_Server.exe not found or not built by the last incremental link; performing full link
+  OS_Lab9_Server.vcxproj -> C:\Users\Lubomyr\Downloads\Telegram Desktop\OS_Lab9_2\OS_Lab9_2\OS_Lab9_Server\x64\Debug\OS_Lab9_Server.exe
