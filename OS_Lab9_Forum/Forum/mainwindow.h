@@ -23,11 +23,15 @@ public:
 
 protected:
 
-private slots:   
+private slots:
     void on_logInButton_clicked();
     void on_signUpButton_clicked();
 
     void reconnect();
+
+    void on_loginLineEdit_textChanged(const QString &arg1);
+
+    void on_passwordLineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::MainWindow *ui;

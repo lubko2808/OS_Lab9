@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QTimer>
 #include <QMessageBox>
+#include <QTabBar>
 
 #include "dataStructs.h"
 
@@ -14,7 +15,7 @@ class UserDialog;
 class UserDialog : public QDialog
 {
     Q_OBJECT
-
+    bool hasMessages;
 public:
     explicit UserDialog(QWidget *parent = nullptr);
     ~UserDialog();
@@ -42,7 +43,8 @@ private:
 
     HANDLE fileMessagesLog;
     MessagesLog *messages;
-    bool connected;
+    bool connected; // змінна, яка визначає, чи вже
+    // встановлено з'єднання із сервером
 };
 
 #endif // USERDIALOG_H

@@ -12,19 +12,22 @@ UserDialog::UserDialog(QWidget *parent) :
 
     reconnectTimer = new QTimer(this);
     connect(reconnectTimer, SIGNAL(timeout()), this, SLOT(reconnectToServer()));
-    // Встановіть інтервал таймера в мілісекундах (наприклад, кожні 1000 мс, тобто 1 секунда)
+    // Встановлюємо інтервал таймера в мілісекундах (наприклад, кожні 1000 мс, тобто 1 секунда)
     reconnectTimer->setInterval(5000);
-    reconnectTimer->start(); // Розпочніть роботу таймера
+    reconnectTimer->start(); // Розпочинаємо роботу таймера
 
     checkNewMessagesTimer = new QTimer(this);
     connect(checkNewMessagesTimer, SIGNAL(timeout()), this, SLOT(pullMessages()));
-    // Встановіть інтервал таймера в мілісекундах (наприклад, кожні 1000 мс, тобто 1 секунда)
+    // Встановлюємо інтервал таймера в мілісекундах (наприклад, кожні 1000 мс, тобто 1 секунда)
     checkNewMessagesTimer->setInterval(1000);
-    checkNewMessagesTimer->start(); // Розпочніть роботу таймера
+    checkNewMessagesTimer->start(); // Розпочинаємо роботу таймера
 
     connect(ui->textEdit, &QTextEdit::textChanged, this, &UserDialog::onTextChanged);
 
     lastPulledMessage = 1;
+    hasMessages = 0;
+    ui->tabWidget->setCurrentWidget(ui->tab_2);
+    ui->tabWidget->tabBar()->hide();
 
     fileMessagesLog = OpenFileMapping(
         FILE_MAP_ALL_ACCESS,
@@ -74,9 +77,12 @@ void UserDialog::on_pushButton_clicked()
         {
             Sleep(1000);
         }
-
-        strcpy_s(users->user[id].messages, 200, ui->textEdit->toPlainText().toStdString().c_str());
-        users->user[id].messages[199] = '\0';
+        QString messageWithNickname = QString(users->user[id].nickname);
+        messageWithNickname+=":\n";
+        messageWithNickname+=ui->textEdit->toPlainText();
+        messageWithNickname+='\0';
+        strcpy(users->user[id].messages, messageWithNickname.toStdString().c_str());
+        users->user[id].messages[MaxMessageWithUserLength-1] = '\0';
         users->user[id].signal = true;
 
         ui->textEdit->setText("\0\0");
@@ -122,11 +128,23 @@ void UserDialog::pullMessages()
             {
                 Sleep(1000);
             }
+            QString message = QString(messages->message[lastPulledMessage]);
 
             if(messages->correct[lastPulledMessage] == true)
             {
-                ui->textBrowser->append(QString(messages->message[lastPulledMessage]));
+                int pos = message.indexOf(':'); // Знаходимо позицію першого ':'
 
+                if (pos != -1)
+                {
+                    // Формуємо з жирним текстом до ':' та звичайним текстом після ':'
+                    QString formattedMessage = "<b>" + message.left(pos + 1) + "</b>" + message.mid(pos + 1);
+
+                    ui->textBrowser->append(formattedMessage);
+                }
+                else {
+                    // Якщо ':' не знайдено, виводимо повідомлення без змін
+                    ui->textBrowser->append(message);
+                }
             }
             else
             {
@@ -135,21 +153,40 @@ void UserDialog::pullMessages()
 
             lastPulledMessage++;
         }
+        if(!hasMessages){
+            QString text = ui->textBrowser->toPlainText();
+            if(!text.isEmpty()){
+                ui->tabWidget->setCurrentWidget(ui->tab);
+                hasMessages = 1;
+            }
+        }
 
     }
 }
 
 void UserDialog::onTextChanged()
 {
-    // Обмеження на кількість символів (наприклад, 10)
-    const int maxLength = 199;
+    // Обмеження на кількість символів ()
+
     QString text = ui->textEdit->toPlainText();
 
     // Перевірка та скорочення тексту, якщо необхідно
-    if (text.length() > maxLength) {
-        text.truncate(maxLength);
+    if (text.length() > MaxMessageLength) {
+        text.truncate(MaxMessageLength);
         ui->textEdit->setPlainText(text);
+        QMessageBox::information(this, "Error", "Text contains more than 199 symbols");
     }
-
+    /*bool isRight = 1;
+    QString copytext;
+    for (QChar symb: text){
+        if(symb.isLetter() || symb.isDigit() || symb.isPunct() || symb.isSpace())
+            copytext+=symb;
+        else
+            isRight =0;
+    }
+    if(!isRight){
+        QMessageBox::information(this, "Error", "Not allowed symbols in message");
+        ui->textEdit->setPlainText(copytext);
+    }*/
 }
 

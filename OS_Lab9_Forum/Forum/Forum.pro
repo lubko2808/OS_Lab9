@@ -11,18 +11,15 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    moderdialog.cpp \
     userdialog.cpp
 
 HEADERS += \
     dataStructs.h \
     mainwindow.h \
-    moderdialog.h \
     userdialog.h
 
 FORMS += \
     mainwindow.ui \
-    moderdialog.ui \
     userdialog.ui
 
 # Default rules for deployment.
